@@ -8,6 +8,8 @@
 	import { optimalWordSequence, getAllWordsSequence } from '$lib/utils';
 	import { onMount } from 'svelte';
 
+	let innerHeight = $state(0);
+
 	const { numberOfRows = $bindable() } = $props();
 	let grid: string[][] = $state([]);
 	let wordEnds: { [key: string]: any[] } = $state({});
@@ -34,7 +36,6 @@
 
 		wordsFoundWritable.subscribe((value) => {
 			wordsFound = value as boolean[];
-			console.log('times');
 			if (wordsFound && words.length > 0) {
 				updateToFull(wordsFound.length, words.length, numberOfRows);
 
@@ -96,6 +97,8 @@
 	}
 </script>
 
+<svelte:window bind:innerHeight />
+
 <div class="my-4 flex h-12 w-full flex-row justify-center border border-gray-300 p-1">
 	<div class="mx-4 flex h-full items-center justify-center">
 		<div class="h-6 w-6">
@@ -115,10 +118,10 @@
 </div>
 
 <div class="flex h-full w-full flex-row">
-	<div class="h-full w-full border border-gray-300">
+	<div class=" h-full w-full border border-gray-300">
 		<VirtualList
 			width="100%"
-			height={700}
+			height={Math.floor((innerHeight - 175) / 28) * 28}
 			itemCount={grid.length}
 			itemSize={28}
 			{scrollToIndex}
@@ -150,7 +153,12 @@
 			Found: {numFound}/{words.length}
 		</div>
 		{#if wordsFound}
-			<VirtualList width="100%" height={700 - 32} itemCount={words.length} itemSize={28}>
+			<VirtualList
+				width="100%"
+				height={Math.floor((innerHeight - 175) / 28) * 28 - 32}
+				itemCount={words.length}
+				itemSize={28}
+			>
 				<div slot="item" let:index let:style {style}>
 					<div class="flex h-8 w-full items-center justify-center px-1" transition:fade>
 						<div class="flex h-full w-44 items-center justify-center text-base">

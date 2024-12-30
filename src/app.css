@@ -8,3 +8,15 @@ html {
 	font-weight: 400;
 	font-style: normal;
 }
+
+::-webkit-scrollbar {
+	@apply w-3 bg-white;
+}
+
+::-webkit-scrollbar-thumb {
+	@apply bg-gray-300 hover:bg-gray-400;
+}
+
+::-webkit-scrollbar-track {
+	@apply bg-gray-100;
+}
