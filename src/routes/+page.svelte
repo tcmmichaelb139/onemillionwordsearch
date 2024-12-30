@@ -17,10 +17,7 @@
 				> project.</span
 			>
 		</div>
-		<!-- drop down menu with 3 options: 25, 100, 100000-->
-		<!-- I want to create a custom drop down menu with three options 25, 100, and 100000. Also I don't want to use html select. I want the style to align with what I have currently which are sharp corners and prety minimal style
 
-		The options will update "numberOfRows" whenever it changes. The default value is 100000. Also I want it to show up when I click the dropdown menu. I can have a variable for this just make the code, I will add it after. -->
 		<div class="ml-auto mt-auto">
 			<button
 				class="border border-gray-300 px-4 py-2"

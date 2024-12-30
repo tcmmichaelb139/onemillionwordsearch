@@ -18,15 +18,15 @@
 	let numFound: number = $state(0);
 
 	function getJson() {
-		fetch('src/lib/WordGrids/wordgrid-' + numberOfRows + '.json')
+		fetch('/wordgrid-' + numberOfRows + '.json')
 			.then((response) => response.json())
 			.then((json) => {
 				grid = json.grid;
 				wordEnds = json.wordsEnds;
 				words = json.words;
-			});
 
-		getWordsFound(numberOfRows);
+				getWordsFound(numberOfRows);
+			});
 	}
 
 	onMount(() => {
@@ -34,7 +34,8 @@
 
 		wordsFoundWritable.subscribe((value) => {
 			wordsFound = value as boolean[];
-			if (wordsFound) {
+			console.log('times');
+			if (wordsFound && words.length > 0) {
 				updateToFull(wordsFound.length, words.length, numberOfRows);
 
 				foundWords = getAllWordsSequence(
