@@ -3,37 +3,60 @@
 
 	import VirtualList from 'svelte-tiny-virtual-list';
 
-	import { wordsFoundWritable, updateToFull, foundWordUpdate } from '$lib/wordStore';
+	import { wordsFoundWritable, getWordsFound, updateToFull, foundWordUpdate } from '$lib/wordStore';
 
 	import { optimalWordSequence, getAllWordsSequence } from '$lib/utils';
-	import { grid, wordsEnds, words } from '$lib/wordgrid.json';
+	import { onMount } from 'svelte';
 
-	const wordEnds = wordsEnds as { [key: string]: any[] };
+	const { numberOfRows = $bindable() } = $props();
+	let grid: string[][] = $state([]);
+	let wordEnds: { [key: string]: any[] } = $state({});
+	let words: string[] = $state([]);
+
 	let wordsFound: boolean[] | undefined = $state();
 	let foundWords: { [key: string]: boolean } = $state({});
 	let numFound: number = $state(0);
 
-	wordsFoundWritable.subscribe((value) => {
-		wordsFound = value as boolean[];
-		if (wordsFound) {
-			updateToFull(wordsFound.length, words.length);
+	function getJson() {
+		fetch('src/lib/WordGrids/wordgrid-' + numberOfRows + '.json')
+			.then((response) => response.json())
+			.then((json) => {
+				grid = json.grid;
+				wordEnds = json.wordsEnds;
+				words = json.words;
+			});
 
-			foundWords = getAllWordsSequence(
-				wordsFound.reduce((acc: string[], val: boolean, idx: number) => {
-					if (val) {
-						acc = [...acc, words[idx]];
-					}
-					return acc;
-				}, [])
-			);
+		getWordsFound(numberOfRows);
+	}
 
-			numFound = wordsFound.reduce((acc, val) => (val ? acc + 1 : acc), 0);
-		}
+	onMount(() => {
+		getJson();
+
+		wordsFoundWritable.subscribe((value) => {
+			wordsFound = value as boolean[];
+			if (wordsFound) {
+				updateToFull(wordsFound.length, words.length, numberOfRows);
+
+				foundWords = getAllWordsSequence(
+					wordsFound.reduce((acc: string[], val: boolean, idx: number) => {
+						if (val) {
+							acc = [...acc, words[idx]];
+						}
+						return acc;
+					}, [])
+				);
+
+				numFound = wordsFound.reduce((acc, val) => (val ? acc + 1 : acc), 0);
+			}
+		});
+	});
+
+	$effect(() => {
+		getJson();
 	});
 
 	let scrollToIndex: number | undefined = $state();
 
-	let currentGrid: string[][] = $state(grid);
 	let wordSequence: { [key: string]: boolean } = $state({});
 	let begEndString: number[][] = $state([]);
 
@@ -65,7 +88,7 @@
 
 			if (word) {
 				const idx = wordEnds[stringified][1];
-				if (wordsFound && !wordsFound[idx]) foundWordUpdate(idx);
+				if (wordsFound && !wordsFound[idx]) foundWordUpdate(idx, numberOfRows);
 				break;
 			}
 		}
@@ -95,7 +118,7 @@
 		<VirtualList
 			width="100%"
 			height={700}
-			itemCount={currentGrid.length}
+			itemCount={grid.length}
 			itemSize={28}
 			{scrollToIndex}
 			scrollToAlignment="center"
@@ -105,7 +128,7 @@
 					<div class="flex h-full w-16 items-center justify-center text-xl text-gray-500">
 						{index}
 					</div>
-					{#each currentGrid[index] as cell, j}
+					{#each grid[index] as cell, j}
 						<button
 							class="flex h-full w-7 items-center justify-center text-xl transition-colors
 								{wordSequence[index + '|' + j] ? 'bg-blue-500' : foundWords[index + '|' + j] ? 'bg-blue-100' : ''}"
@@ -121,8 +144,8 @@
 		</VirtualList>
 	</div>
 
-	<div class="ml-4 flex w-72 flex-col overflow-auto border">
-		<div class="flex h-8 items-center justify-center border-b text-lg">
+	<div class="ml-4 flex w-72 flex-col overflow-auto border border-gray-300">
+		<div class="flex h-8 items-center justify-center border-b border-gray-300 text-lg">
 			Found: {numFound}/{words.length}
 		</div>
 		{#if wordsFound}

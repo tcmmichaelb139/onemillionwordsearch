@@ -1,3 +1,10 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Geist+Mono:wght@100..900&display=swap');
+
+html {
+	font-family: 'Fira Mono', serif;
+	font-weight: 400;
+	font-style: normal;
+}

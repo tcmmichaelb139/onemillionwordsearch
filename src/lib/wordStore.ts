@@ -1,8 +1,11 @@
 import { writable } from 'svelte/store';
 import { supabase } from '$lib/supabase';
 
-export async function clearWordsFound() {
-	const { error } = await supabase.from('words').delete().neq('found', true);
+export async function clearWordsFound(numberOfRows: number) {
+	const { error } = await supabase
+		.from('rows-' + numberOfRows)
+		.delete()
+		.neq('found', true);
 
 	if (error) return console.log(error);
 }
@@ -13,8 +16,8 @@ function updateWordFound(data: { found: boolean }[]) {
 	wordsFoundWritable.set(data.map((word: { found: boolean }) => word.found));
 }
 
-export async function getWordsFound() {
-	const { data, error } = await supabase.from('words').select('*');
+export async function getWordsFound(numberOfRows: number) {
+	const { data, error } = await supabase.from('rows-' + numberOfRows).select('*');
 
 	if (error) {
 		return console.log(error);
@@ -25,31 +28,32 @@ export async function getWordsFound() {
 
 	updateWordFound(data);
 }
-getWordsFound();
 
-export async function updateToFull(curNumWords: number, numOfWords: number) {
+export async function updateToFull(curNumWords: number, numOfWords: number, numberOfRows: number) {
 	if (curNumWords >= numOfWords) return;
 
 	const newData = [];
 	for (let i = curNumWords; i < numOfWords; i++) {
 		newData.push({ id: curNumWords + i, found: false });
 	}
-	const { error } = await supabase.from('words').insert(newData);
+	const { error } = await supabase.from('rows-' + numberOfRows).insert(newData);
 
 	if (error) {
 		return console.log(error);
 	}
 
-	getWordsFound();
+	getWordsFound(numberOfRows);
 }
 
-export async function foundWordUpdate(id: number) {
-	console.log(id);
-	const { error } = await supabase.from('words').update({ found: true }).eq('id', id);
+export async function foundWordUpdate(id: number, numberOfRows: number) {
+	const { error } = await supabase
+		.from('rows-' + numberOfRows)
+		.update({ found: true })
+		.eq('id', id);
 
 	if (error) {
 		return console.log(error);
 	}
 
-	getWordsFound();
+	getWordsFound(numberOfRows);
 }
