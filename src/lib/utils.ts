@@ -58,14 +58,18 @@ export function optimalWordSequence(start: number[], cur: number[]): { [key: str
 	return getSequnece(start, end);
 }
 
-export function getAllWordsSequence(words: string[]): { [key: string]: boolean } {
-	let sequence: { [key: string]: boolean } = {};
+export function getAllWordsSequence(words: string[]): { [key: string]: number } {
+	let sequence: { [key: string]: number } = {};
 
 	for (let i = 0; i < words.length; i++) {
 		const data = JSON.parse(words[i]);
 		const seq = optimalWordSequence(data[0], data[1]);
 
-		sequence = { ...sequence, ...seq };
+		// merge sequence and seq objects but add the values if they are the same
+		sequence = Object.keys(seq).reduce((a, b) => {
+			a[b] = a[b] ? a[b] + 1 : 1;
+			return a;
+		}, sequence);
 	}
 
 	return sequence;

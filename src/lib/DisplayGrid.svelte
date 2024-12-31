@@ -16,7 +16,7 @@
 	let words: string[] = $state([]);
 
 	let wordsFound: boolean[] | undefined = $state();
-	let foundWords: { [key: string]: boolean } = $state({});
+	let foundWords: { [key: string]: number } = $state({});
 	let numFound: number = $state(0);
 
 	function getJson() {
@@ -135,7 +135,25 @@
 					{#each grid[index] as cell, j}
 						<button
 							class="flex h-full w-7 items-center justify-center text-xl transition-colors
-								{wordSequence[index + '|' + j] ? 'bg-blue-500' : foundWords[index + '|' + j] ? 'bg-blue-100' : ''}"
+								{wordSequence[index + '|' + j]
+								? 'bg-sky-300'
+								: foundWords[index + '|' + j] == 1
+									? 'bg-blue-100'
+									: foundWords[index + '|' + j] == 2
+										? 'bg-blue-200'
+										: foundWords[index + '|' + j] == 3
+											? 'bg-blue-300'
+											: foundWords[index + '|' + j] == 4
+												? 'bg-blue-400'
+												: foundWords[index + '|' + j] == 5
+													? 'bg-blue-500'
+													: foundWords[index + '|' + j] == 6
+														? 'bg-blue-600'
+														: foundWords[index + '|' + j] == 7
+															? 'bg-blue-700'
+															: foundWords[index + '|' + j] == 8
+																? 'bg-blue-800'
+																: ''}"
 							onmousedown={() => onMouseDown(index, j)}
 							onmousemove={() => onMouseDrag(index, j)}
 							onmouseup={onMouseUp}

@@ -5,7 +5,8 @@ import tqdm
 
 WIDTH = 25
 HEIGHT = 100
-MAX_RUNS = 100
+NUM_WORDS = HEIGHT * 2
+MAX_RUNS = 1000
 
 
 def initGrid():
@@ -189,7 +190,7 @@ def generateWordGrid(wordList):
             beginAndEndList[stringified] = [word, len(words)]
             words.append(stringified)
 
-        if len(words) >= 100:
+        if len(words) >= NUM_WORDS:
             break
 
     grid = fillGridWithRandomLetters(grid)
