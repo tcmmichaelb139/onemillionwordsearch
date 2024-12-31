@@ -5,9 +5,11 @@ export async function clearWordsFound(numberOfRows: number) {
 	const { error } = await supabase
 		.from('rows-' + numberOfRows)
 		.delete()
-		.neq('found', true);
+		.neq('id', -1);
 
-	if (error) return console.log(error);
+	if (error) {
+		return console.log(error);
+	}
 }
 
 export const wordsFoundWritable = writable();

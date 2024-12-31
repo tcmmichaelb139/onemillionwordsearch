@@ -54,6 +54,7 @@
 	});
 
 	$effect(() => {
+		wordsFound = [];
 		getJson();
 	});
 
