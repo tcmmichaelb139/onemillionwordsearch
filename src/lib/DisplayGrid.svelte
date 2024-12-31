@@ -119,6 +119,9 @@
 
 <div class="flex h-full w-full flex-row">
 	<div class=" h-full w-full border border-gray-300">
+		{#if grid.length == 0}
+			<div class="absolute m-4 animate-bounce text-lg">Loading...</div>
+		{/if}
 		<VirtualList
 			width="100%"
 			height={Math.floor((innerHeight - 175) / 28) * 28}
