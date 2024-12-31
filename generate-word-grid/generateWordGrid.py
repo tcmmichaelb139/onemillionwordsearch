@@ -4,8 +4,8 @@ import random
 import tqdm
 
 WIDTH = 25
-HEIGHT = 100
-NUM_WORDS = HEIGHT * 2
+HEIGHT = 100000
+NUM_WORDS = HEIGHT * 1.5
 MAX_RUNS = 1000
 
 
@@ -198,7 +198,7 @@ def generateWordGrid(wordList):
     return grid, beginAndEndList, words
 
 
-with open("english_25k.json", "r") as wordList:
+with open("english_450k.json", "r") as wordList:
     wordlist = json.load(wordList)["words"]
 
 wordlist = [word.upper() for word in wordlist]
